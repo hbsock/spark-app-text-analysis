@@ -20,7 +20,13 @@ object SimpleApp {
       .filter(_.matches("\\w+"))
       .cache()
 
-    words.take(100).map(println)
+    val word_counts = words
+      .map(x => (x, 1L))
+      .reduceByKey(_ + _)
+
+    word_counts.collect().map(println)
+    //words.take(100).map(println)
+    
 
     /*
     val numAs = logData.filter(line => line.contains("a")).count()
