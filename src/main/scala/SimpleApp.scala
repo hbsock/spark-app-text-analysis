@@ -1,24 +1,35 @@
 /* SimpleApp.scala */
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.rdd.RDD
 
 object SimpleApp {
 
+
   def main(args: Array[String]) {
-    val input_text = "/home/hanbinsock/programman/haskell/web-scraper/output/a-will-eternal/chapter-0001.txt" // Should be some file on your system
+    val input_text_file = "/home/hanbinsock/programman/haskell/web-scraper/output/a-will-eternal/chapter-0001.txt" // Should be some file on your system
 
     val spark = SparkSession
       .builder
       .appName("Simple Application")
-      .config("spark.master", "local")
       .getOrCreate()
 
-    val logData = spark.read.textFile(input_text).rdd.cache()
+    val input_text = spark.read.textFile(input_text_file).rdd
 
+    val words = input_text
+      .flatMap(_.split("\\s+"))
+      .filter(_.matches("\\w+"))
+      .cache()
+
+    words.take(100).map(println)
+
+    /*
     val numAs = logData.filter(line => line.contains("a")).count()
     val numBs = logData.filter(line => line.contains("b")).count()
 
     println(s"Lines with a: $numAs, Lines with b: $numBs")
-    spark.stop()
+    */
+
+    //spark.stop()
   }
 
 }
