@@ -6,7 +6,10 @@ object SimpleApp {
 
 
   def main(args: Array[String]) {
-    val input_text_file = "/home/hanbinsock/programman/haskell/web-scraper/output/a-will-eternal/chapter-0001.txt" // Should be some file on your system
+    val input_path = "/home/hanbinsock/programman/haskell/web-scraper/output/a-will-eternal/chapter-0001.txt" 
+    val output_path = "/home/hanbinsock/output/will-eternal-chapter-0001-word-count"
+
+    val input_text_file = input_path // Should be some file on your system
 
     val spark = SparkSession
       .builder
@@ -18,22 +21,19 @@ object SimpleApp {
     val words = input_text
       .flatMap(_.split("\\s+"))
       .filter(_.matches("\\w+"))
+      .map(_.toLowerCase)
       .cache()
 
     val word_counts = words
       .map(x => (x, 1L))
       .reduceByKey(_ + _)
+      .sortBy(_._2, false)
+      .cache()
 
-    word_counts.collect().map(println)
-    //words.take(100).map(println)
+    word_counts
+      .map({ case (w, c) => w + "," + c }) // convert output to csv
+      .saveAsTextFile(output_path)
     
-
-    /*
-    val numAs = logData.filter(line => line.contains("a")).count()
-    val numBs = logData.filter(line => line.contains("b")).count()
-
-    println(s"Lines with a: $numAs, Lines with b: $numBs")
-    */
 
     //spark.stop()
   }
