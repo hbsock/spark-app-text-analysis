@@ -16,6 +16,9 @@ object SimpleApp {
       .master("local")
       .getOrCreate()
 
+    import spark.sqlContext.implicits._
+
+
     val input_text = spark.read.textFile(input_path).rdd
 
     val words = input_text
@@ -30,7 +33,7 @@ object SimpleApp {
       .sortBy(_._2, false)
       .cache()
 
-    val word_counts_df = word_counts.toDF
+    val word_counts_df = word_counts.toDF()
     word_counts_df
       .write
       .mode(SaveMode.Overwrite)
