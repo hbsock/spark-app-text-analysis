@@ -1,6 +1,7 @@
 /* SimpleApp.scala */
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.SaveMode
 
 object SimpleApp {
 
@@ -30,9 +31,15 @@ object SimpleApp {
       .sortBy(_._2, false)
       .cache()
 
-    word_counts
-      .map({ case (w, c) => w + "," + c }) // convert output to csv
-      .saveAsTextFile(output_path)
+    val word_counts_df = word_counts.toDF
+    word_counts_df
+      .write
+      .mode(SaveMode.Overwrite)
+      .format("csv")
+      .save(output_path)
+
+    //  .map({ case (w, c) => w + "," + c }) // convert output to csv
+    //  .saveAsTextFile(output_path)
     
 
     spark.stop()
