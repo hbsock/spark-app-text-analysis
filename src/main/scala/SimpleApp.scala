@@ -35,7 +35,7 @@ object SimpleApp {
       .saveAsTextFile(output_path)
     
 
-    //spark.stop()
+    spark.stop()
   }
 
 }
