@@ -10,14 +10,12 @@ object SimpleApp {
     val input_path = "/home/hanbinsock/programman/haskell/web-scraper/output/a-will-eternal/chapter-0001.txt" 
     val output_path = "/home/hanbinsock/output/will-eternal-chapter-0001-word-count"
 
-    val input_text_file = input_path // Should be some file on your system
-
     val spark = SparkSession
       .builder
       .appName("Simple Application")
       .getOrCreate()
 
-    val input_text = spark.read.textFile(input_text_file).rdd
+    val input_text = spark.read.textFile(input_path).rdd
 
     val words = input_text
       .flatMap(_.split("\\s+"))
