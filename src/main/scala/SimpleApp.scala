@@ -13,6 +13,7 @@ object SimpleApp {
     val spark = SparkSession
       .builder
       .appName("Simple Application")
+      .master("local")
       .getOrCreate()
 
     val input_text = spark.read.textFile(input_path).rdd
@@ -36,11 +37,7 @@ object SimpleApp {
       .format("csv")
       .save(output_path)
 
-    //  .map({ case (w, c) => w + "," + c }) // convert output to csv
-    //  .saveAsTextFile(output_path)
-    
-
-    spark.stop()
+    //spark.stop()
   }
 
 }
