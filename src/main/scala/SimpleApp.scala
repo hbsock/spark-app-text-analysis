@@ -5,6 +5,13 @@ import org.apache.spark.sql.SaveMode
 
 object SimpleApp {
 
+  def parseWords(text: RDD[String]): RDD[String] = {
+    text
+      .flatMap(_.split("\\s+"))
+      .filter(_.matches("\\w+"))
+      .map(_.toLowerCase)
+  }
+
 
   def main(args: Array[String]) {
     val input_path = "/home/hanbinsock/programman/haskell/web-scraper/output/a-will-eternal/chapter-0001.txt" 
@@ -13,7 +20,7 @@ object SimpleApp {
     val spark = SparkSession
       .builder
       .appName("Simple Application")
-      .master("local")
+      .master("local[*]")
       .getOrCreate()
 
     import spark.sqlContext.implicits._
@@ -21,11 +28,7 @@ object SimpleApp {
 
     val input_text = spark.read.textFile(input_path).rdd
 
-    val words = input_text
-      .flatMap(_.split("\\s+"))
-      .filter(_.matches("\\w+"))
-      .map(_.toLowerCase)
-      .cache()
+    val words = parseWords(input_text).cache()
 
     val word_counts = words
       .map(x => (x, 1L))
@@ -40,7 +43,7 @@ object SimpleApp {
       .format("csv")
       .save(output_path)
 
-    //spark.stop()
+    spark.stop()
   }
 
 }
