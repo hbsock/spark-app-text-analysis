@@ -1,6 +1,6 @@
 import org.apache.spark.sql.SparkSession
 import org.scalatest._
-
+import textanalysis.SimpleApp.parseWords
 
 class TestTextParsing extends FunSuite with BeforeAndAfterEach {
 
@@ -22,6 +22,19 @@ class TestTextParsing extends FunSuite with BeforeAndAfterEach {
 	val rdd = sparkSession.sparkContext.parallelize(list)
 
 	assert(rdd.count === list.length)
+  }
+
+  test("test basic word parsing no punctuation") {
+    val text = Seq("cat dog animal")
+    val rdd = sparkSession.sparkContext.parallelize(text)
+    val parsed_rdd = parseWords(rdd)
+    
+    val parsed_text = parsed_rdd.collect()
+
+    assert(parsed_text.length === 3)
+    assert(parsed_text(0) === "cat")
+    assert(parsed_text(1) === "dog")
+    assert(parsed_text(2) === "animal")
   }
 
 }
