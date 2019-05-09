@@ -7,10 +7,15 @@ import org.apache.spark.sql.SaveMode
 
 object SimpleApp {
 
+  def stripChars(s: String, ch: String) = s filterNot (ch contains _)
+
   def parseWords(text: RDD[String]): RDD[String] = {
     text
-      .flatMap(_.split("\\s+"))
-      .filter(_.matches("\\w+"))
+      .flatMap(
+        stripChars(_, """“.,!?’':"""")
+        .split("\\s+")
+      )
+      .filter(_.matches("""\w+"""))
       .map(_.toLowerCase)
   }
 
