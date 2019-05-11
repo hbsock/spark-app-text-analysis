@@ -5,7 +5,10 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SaveMode
 
+import textanalysis.Constants.getStopWords
+
 object SimpleApp {
+
 
   def stripChars(s: String, ch: String) = s filterNot (ch contains _)
 
@@ -17,6 +20,7 @@ object SimpleApp {
       )
       .filter(_.matches("""\w+"""))
       .map(_.toLowerCase)
+      .filter(!getStopWords().contains(_))
   }
 
 
