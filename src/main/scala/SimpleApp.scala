@@ -1,6 +1,7 @@
 /* SimpleApp.scala */
 package textanalysis
 
+import org.apache.log4j.{Level, LogManager, PropertyConfigurator}
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SaveMode
@@ -26,6 +27,9 @@ object SimpleApp {
 
   def main(args: Array[String]) {
 
+    val log = LogManager.getRootLogger
+    args.map(log.info)
+
     val spark = SparkSession
       .builder
       .appName("Simple Application")
@@ -34,8 +38,8 @@ object SimpleApp {
 
     import spark.sqlContext.implicits._
 
-    val input_path = "/home/hanbinsock/programman/haskell/web-scraper/output/a-will-eternal/chapter-0001.txt"
-    val output_path = "/home/hanbinsock/output/will-eternal-chapter-0001-word-count"
+    val input_path = args(0)
+    val output_path = args(1)
 
     val input_text = spark.read.textFile(input_path).rdd
 
