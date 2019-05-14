@@ -43,13 +43,11 @@ object SimpleApp {
 
     val input_text = spark.read.textFile(input_path).rdd
 
-    val words = parseWords(input_text).cache()
+    val words = parseWords(input_text)
 
     val word_counts = words
       .map(x => (x, 1L))
       .reduceByKey(_ + _)
-      .sortBy(_._2, false)
-      .cache()
 
     val word_counts_df = word_counts.toDF()
     word_counts_df
