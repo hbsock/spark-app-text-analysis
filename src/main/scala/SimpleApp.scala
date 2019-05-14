@@ -25,8 +25,6 @@ object SimpleApp {
 
 
   def main(args: Array[String]) {
-    val input_path = "/home/hanbinsock/programman/haskell/web-scraper/output/a-will-eternal/chapter-0001.txt" 
-    val output_path = "/home/hanbinsock/output/will-eternal-chapter-0001-word-count"
 
     val spark = SparkSession
       .builder
@@ -36,6 +34,8 @@ object SimpleApp {
 
     import spark.sqlContext.implicits._
 
+    val input_path = "/home/hanbinsock/programman/haskell/web-scraper/output/a-will-eternal/chapter-0001.txt"
+    val output_path = "/home/hanbinsock/output/will-eternal-chapter-0001-word-count"
 
     val input_text = spark.read.textFile(input_path).rdd
 
